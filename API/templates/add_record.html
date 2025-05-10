@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Record - NexusShield</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-top: 1.5rem;
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        .form-section-title {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">NexusShield</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('add_record') }}">Add Record</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('search') }}">Search</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Add New Transaction Record</h1>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="form-container">
+            <form action="{{ url_for('add_record') }}" method="post">
+                <!-- Transaction Details -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Transaction Details</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="TransactionID" class="form-label required-field">Transaction ID</label>
+                            <input type="text" class="form-control" id="TransactionID" name="TransactionID" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="AccountID" class="form-label required-field">Account ID</label>
+                            <input type="text" class="form-control" id="AccountID" name="AccountID" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="TransactionAmount" class="form-label required-field">Transaction Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="TransactionAmount" name="TransactionAmount" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="TransactionDate" class="form-label required-field">Transaction Date</label>
+                            <input type="date" class="form-control" id="TransactionDate" name="TransactionDate" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="TransactionType" class="form-label">Transaction Type</label>
+                            <select class="form-select" id="TransactionType" name="TransactionType">
+                                <option value="">-- Select Type --</option>
+                                <option value="Purchase">Purchase</option>
+                                <option value="Withdrawal">Withdrawal</option>
+                                <option value="Transfer">Transfer</option>
+                                <option value="Payment">Payment</option>
+                                <option value="Deposit">Deposit</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="Channel" class="form-label">Channel</label>
+                            <select class="form-select" id="Channel" name="Channel">
+                                <option value="">-- Select Channel --</option>
+                                <option value="Online">Online</option>
+                                <option value="Mobile">Mobile</option>
+                                <option value="In-Person">In-Person</option>
+                                <option value="ATM">ATM</option>
+                                <option value="Phone">Phone</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Location Information</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="Location" name="Location" placeholder="City, Country">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="MerchantID" class="form-label">Merchant ID</label>
+                            <input type="text" class="form-control" id="MerchantID" name="MerchantID">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Device Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Device Information</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="DeviceID" class="form-label">Device ID</label>
+                            <input type="text" class="form-control" id="DeviceID" name="DeviceID">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="IP_Address" class="form-label">IP Address</label>
+                            <input type="text" class="form-control" id="IP_Address" name="IP_Address" placeholder="e.g., 192.168.1.1">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="LoginAttempts" class="form-label">Login Attempts</label>
+                            <input type="number" class="form-control" id="LoginAttempts" name="LoginAttempts" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="TransactionDuration" class="form-label">Transaction Duration (seconds)</label>
+                            <input type="number" class="form-control" id="TransactionDuration" name="TransactionDuration" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Customer Information</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="CustomerAge" class="form-label">Customer Age</label>
+                            <input type="number" class="form-control" id="CustomerAge" name="CustomerAge" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="CustomerOccupation" class="form-label">Customer Occupation</label>
+                            <input type="text" class="form-control" id="CustomerOccupation" name="CustomerOccupation">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Account Information</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="AccountBalance" class="form-label">Account Balance</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="AccountBalance" name="AccountBalance">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="PreviousTransactionDate" class="form-label">Previous Transaction Date</label>
+                            <input type="date" class="form-control" id="PreviousTransactionDate" name="PreviousTransactionDate">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="AccountProfileID" class="form-label">Account Profile ID</label>
+                            <input type="text" class="form-control" id="AccountProfileID" name="AccountProfileID">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <button type="reset" class="btn btn-outline-secondary">
+                        <i class="fas fa-undo"></i> Reset Form
+                    </button>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save"></i> Add Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="container mt-5">
+        <hr>
+        <p class="text-center text-muted">&copy; 2025 NexusShield</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

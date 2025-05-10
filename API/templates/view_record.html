@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Record - NexusShield</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .record-value {
+            font-family: 'Courier New', monospace;
+            background-color: #f8f9fa;
+            padding: 3px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                <li class="breadcrumb-item active">View Record</li>
+            </ol>
+        </nav>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Transaction Details</h4>
+                <div>
+                    <a href="{{ url_for('edit_record', index=record['Index']) }}" class="btn btn-sm btn-light me-2">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <p><span class="detail-label">Index:</span> <span class="record-value">{{ record['Index'] }}</span></p>
+                        <p><span class="detail-label">Transaction ID:</span> <span class="record-value">{{ record['TransactionID'] }}</span></p>
+                        <p><span class="detail-label">Account ID:</span> <span class="record-value">{{ record['AccountID'] }}</span></p>
+                        <p><span class="detail-label">Transaction Amount:</span> <span class="record-value">${{ record['TransactionAmount'] }}</span></p>
+                        <p><span class="detail-label">Transaction Date:</span> <span class="record-value">{{ record['TransactionDate'] }}</span></p>
+                        <p><span class="detail-label">Transaction Type:</span> <span class="record-value">{{ record['TransactionType'] }}</span></p>
+                        <p><span class="detail-label">Location:</span> <span class="record-value">{{ record['Location'] }}</span></p>
+                        <p><span class="detail-label">Device ID:</span> <span class="record-value">{{ record['DeviceID'] }}</span></p>
+                        <p><span class="detail-label">IP Address:</span> <span class="record-value">{{ record['IP Address'] }}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><span class="detail-label">Merchant ID:</span> <span class="record-value">{{ record['MerchantID'] }}</span></p>
+                        <p><span class="detail-label">Channel:</span> <span class="record-value">{{ record['Channel'] }}</span></p>
+                        <p><span class="detail-label">Customer Age:</span> <span class="record-value">{{ record['CustomerAge'] }}</span></p>
+                        <p><span class="detail-label">Customer Occupation:</span> <span class="record-value">{{ record['CustomerOccupation'] }}</span></p>
+                        <p><span class="detail-label">Transaction Duration:</span> <span class="record-value">{{ record['TransactionDuration'] }} seconds</span></p>
+                        <p><span class="detail-label">Login Attempts:</span> <span class="record-value">{{ record['LoginAttempts'] }}</span></p>
+                        <p><span class="detail-label">Account Balance:</span> <span class="record-value">${{ record['AccountBalance'] }}</span></p>
+                        <p><span class="detail-label">Previous Transaction Date:</span> <span class="record-value">{{ record['PreviousTransactionDate'] }}</span></p>
+                        <p><span class="detail-label">Account Profile ID:</span> <span class="record-value">{{ record['AccountProfileID'] }}</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this record? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ url_for('delete_record', index=record['Index']) }}" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

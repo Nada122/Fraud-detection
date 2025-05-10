@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Records - NexusShield</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .search-icon {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                <li class="breadcrumb-item active">Search</li>
+            </ol>
+        </nav>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-search me-2"></i>Search Transaction Records</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('search') }}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="search_term" class="form-label">Search Term</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search search-icon"></i></span>
+                                <input type="text" class="form-control" id="search_term" name="search_term" placeholder="Enter search term" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="search_field" class="form-label">Search Field</label>
+                            <select class="form-select" id="search_field" name="search_field" required>
+                                <option value="" selected disabled>Select a field to search</option>
+                                <option value="TransactionID">Transaction ID</option>
+                                <option value="AccountID">Account ID</option>
+                                <option value="TransactionAmount">Transaction Amount</option>
+                                <option value="TransactionDate">Transaction Date</option>
+                                <option value="TransactionType">Transaction Type</option>
+                                <option value="Location">Location</option>
+                                <option value="DeviceID">Device ID</option>
+                                <option value="IP_Address">IP Address</option>
+                                <option value="MerchantID">Merchant ID</option>
+                                <option value="Channel">Channel</option>
+                                <option value="CustomerAge">Customer Age</option>
+                                <option value="CustomerOccupation">Customer Occupation</option>
+                                <option value="AccountProfileID">Account Profile ID</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Search Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Search is case-insensitive and will find partial matches.</li>
+                    <li>For numeric fields like Transaction Amount, you can search for specific values (e.g., "1000").</li>
+                    <li>For date fields, use the format in your database (typically YYYY-MM-DD).</li>
+                    <li>To find records in a location, just enter the city or country name.</li>
+                    <li>Search for transaction types like "withdrawal", "deposit", or "transfer".</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
